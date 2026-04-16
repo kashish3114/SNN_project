@@ -15,6 +15,8 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def load_npz(path: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -77,6 +79,16 @@ def train_and_evaluate(
     print(f"Macro F1-score: {f1:.4f}")
     print("Confusion matrix:")
     print(cm)
+    
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+                xticklabels=["Rest", "Fist"], yticklabels=["Rest", "Fist"])
+    plt.xlabel("Predicted Label")
+    plt.ylabel("True Label")
+    plt.title("Logistic Regression Confusion Matrix (80/20 Split)")
+    plt.tight_layout()
+    plt.savefig("lr_confusion_matrix_split.png")
+    plt.close()
 
 
 def subject_wise_evaluation(
@@ -118,6 +130,16 @@ def subject_wise_evaluation(
     print(f"Macro F1-score: {f1:.4f}")
     print("Confusion matrix:")
     print(cm)
+
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+                xticklabels=["Rest", "Fist"], yticklabels=["Rest", "Fist"])
+    plt.xlabel("Predicted Label")
+    plt.ylabel("True Label")
+    plt.title("Logistic Regression Confusion Matrix (Subject-wise)")
+    plt.tight_layout()
+    plt.savefig("lr_confusion_matrix_subject.png")
+    plt.close()
 
 
 def parse_args() -> argparse.Namespace:

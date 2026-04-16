@@ -12,6 +12,8 @@ import argparse
 from typing import Tuple
 
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
@@ -43,8 +45,8 @@ def extract_features(X: np.ndarray) -> np.ndarray:
     return features
 
 
-def evaluate_split(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray) -> None:
-    """Fit an MLP and print accuracy, macro F1, and confusion matrix."""
+def evaluate_split(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray, y_test: np.ndarray, title_prefix: str = "") -> None:
+    """Fit an MLP and print accuracy, macro F1, and plot confusion matrix."""
     clf = MLPClassifier(
         hidden_layer_sizes=(64, 32),
         activation="relu",
@@ -63,6 +65,26 @@ def evaluate_split(X_train: np.ndarray, y_train: np.ndarray, X_test: np.ndarray,
     print("Confusion matrix:")
     print(cm)
 
+    # Plot confusion matrix using seaborn heatmap
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                xticklabels=['Rest', 'Fist'], yticklabels=['Rest', 'Fist'])
+    
+    title = 'MLP Confusion Matrix'
+    if title_prefix:
+        title = f"{title_prefix}\n{title} (Accuracy: {acc*100:.1f}%)"
+    else:
+        title = f"{title} (Accuracy: {acc*100:.1f}%)"
+        
+    plt.title(title)
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.tight_layout()
+    filename = f"mlp_cm_{title_prefix.lower().replace(' ', '_')}.png" if title_prefix else "mlp_cm.png"
+    plt.savefig(filename, dpi=300)
+    print(f"Saved confusion matrix plot to {filename}")
+    plt.close()
+
 
 def stratified_split_eval(X: np.ndarray, y: np.ndarray) -> None:
     """Stratified 80/20 train-test evaluation."""
@@ -74,7 +96,7 @@ def stratified_split_eval(X: np.ndarray, y: np.ndarray) -> None:
         random_state=42,
     )
     print("Stratified 80/20 split results:")
-    evaluate_split(X_train, y_train, X_test, y_test)
+    evaluate_split(X_train, y_train, X_test, y_test, title_prefix="Stratified Split")
 
 
 def subject_wise_eval(X: np.ndarray, y: np.ndarray, subjects: np.ndarray) -> None:
@@ -92,7 +114,7 @@ def subject_wise_eval(X: np.ndarray, y: np.ndarray, subjects: np.ndarray) -> Non
         return
 
     print("\nSubject-wise evaluation (train subjects 1-30, test subjects 31-36):")
-    evaluate_split(X_train, y_train, X_test, y_test)
+    evaluate_split(X_train, y_train, X_test, y_test, title_prefix="Subject-wise Split")
 
 
 def parse_args() -> argparse.Namespace:
