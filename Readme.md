@@ -24,8 +24,21 @@ using both conventional ML models and a Spiking Neural Network (SNN).
 3. step9_train_snn.py
 4. step11_manual_inference.py
 
+pip freeze > requirements.txt
+
 ## Dataset
 UCI EMG Dataset
+
+## Dataset Setup
+Download from:
+https://archive.ics.uci.edu/ml/datasets/EMG+data+for+gestures
+
+Place in:
+data/raw/
+
+## Motivation
+SNNs provide biologically inspired, event-driven computation and potential
+energy efficiency advantages over traditional neural networks.
 
 ## Author
 Kashish Pranav Shah
